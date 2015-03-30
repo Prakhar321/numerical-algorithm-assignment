@@ -1,67 +1,46 @@
-# ques 5
+import matplotlib.pyplot as plt
+from numpy import *
 class PolynomialSolver:
-	def F(self,n,L,val):
-		return sum(L[i]*(val**i) for i in range(n+1))
-	def Fder(self,n,L,val):
-		return sum(i*L[i]*(val**(i-1)) for i in range(1,n+1))
-	def solve(self,n,L,method):
-		if(method=='bisection'):
-			print("Input lower bound of interval in which root lies")
-			l=int(input())
-			print("Input upper bound of interval in which root lies")
-			u=int(input())
-			print("Input maximum number of itertions")
-			it=int(input())
-			while(abs(self.F(n,L,l)-self.F(n,L,u))>0.00001 and it>0):
-				m=(l+u)/2
-				if(self.F(n,L,l)*self.F(n,L,m)<0):
-					u=m
-				else:
-					l=m
-				print (l,u,self.F(n,L,l),self.F(n,L,u))
-				it-=1
-			return([l,u])
-		if(method=='secant'):
-			print("Enter lower bound of interval in which root lies")
-			l=int(input())
-			print("Enter upper bound of interval in which root lies")
-			u=int(input())
-			print("Enter maximum number of itertions")
-			it=int(input())
-			while(abs(self.F(n,L,l))>0.00001 and it>0):
-				f1=self.F(n,L,l)
-				f2=self.F(n,L,u)
-				l,u=u,u-(((u-l)*f2)/(f2-f1))
-				print (l,u,f1,f2)
-				it-=1
-			return(l)
-		if(method=='secantRF'):
-			print("Enter lower bound of interval in which root lies")
-			l=int(input())
-			print("Enter upper bound of interval in which root lies")
-			u=int(input())
-			m=l
-			print("Enter maximum number of itertions")
-			it=int(input())
-			while(abs(self.F(n,L,m))>0.00001 and it>0):
-				f1=self.F(n,L,l)
-				f2=self.F(n,L,u)
-				m=u-(((u-l)*f2)/(f2-f1))
-				fm=self.F(n,L,m)
-				if(f1*fm<0):
-					u=m
-				else:
-					l=m
-				print (m)
-				it-=1
-			return(l)
-		if(method=='newtonraphson'):
-			print("Enter lower bound of interval in which root lies")
-			l=int(input())
-			print("Enter maximum number of itertions")
-			it=int(input())
-			while(abs(self.F(n,L,l))>0.00001 and it>0):
-				l=l-self.F(n,L,l)/self.Fder(n,L,l)
-			return(l)
-		else:
-			return NULL
+    def __init__(self,l,a,b):
+        self.l=l
+        self.a=a
+        self.b=b
+    def f(self,x):
+          func=0.0
+          for i in range(len(self.l)):
+              func+=self.l[i]*x**i
+          return func
+    def graph(self):
+         fig=plt.figure()
+         ax=fig.add_subplot(111)
+         if(self.b>self.a):
+             la,lb=[self.a],[self.b]
+             x=arange(self.a,self.b+0.001,0.001)
+             plt.plot(x,self.f(x))
+             for i in range(50):
+                     m=(self.a+self.b)/2
+                     if(self.f(self.a)*self.f(m)<0.0):
+                         self.b=m
+                     elif(self.f(self.b)*self.f(m)<0.0):
+                         self.a=m
+
+                     la.append(self.a)
+                     lb.append(self.b)
+             fla=[self.f(i) for i in la]
+             flb=[self.f(i) for i in lb]
+             plt.plot(la,fla,'ro',lb,flb,'go')
+             plt.plot(m,self.f(m),'y^')
+             ax.annotate('root', xy=(m,self.f(m)), xytext=(self.b,self.f(self.b)),
+                arrowprops={'facecolor':'black', 'shrink':0.05})
+             plt.show()
+             return (self.a,self.b)
+        
+
+l=[]
+n=int(input())
+for j in range(n):
+    l.append(int(input()))
+a=input()
+b=input()
+igr= PolynomialSolver(l,a,b)
+print igr.graph()
